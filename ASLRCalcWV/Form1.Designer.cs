@@ -79,7 +79,7 @@
             this.button1.Dock = System.Windows.Forms.DockStyle.Right;
             this.button1.Location = new System.Drawing.Point(527, 0);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 283);
+            this.button1.Size = new System.Drawing.Size(75, 233);
             this.button1.TabIndex = 4;
             this.button1.Text = "Refresh";
             this.button1.UseVisualStyleBackColor = true;
@@ -104,10 +104,10 @@
             this.textBox3.HideSelection = false;
             this.textBox3.Location = new System.Drawing.Point(0, 209);
             this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(527, 23);
             this.textBox3.TabIndex = 6;
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // label1
             // 
@@ -168,7 +168,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(602, 283);
+            this.ClientSize = new System.Drawing.Size(602, 233);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox2);
@@ -181,7 +181,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
-            this.Text = "ALSR Calc by Warranty Voider";
+            this.Text = "ASLR Calc by Warranty Voider";
             this.ResumeLayout(false);
             this.PerformLayout();
 

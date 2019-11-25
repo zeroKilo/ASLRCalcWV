@@ -13,6 +13,7 @@ namespace ALSRCalc
 {
     public partial class Form1 : Form
     {
+        public bool _exit = false;
         Process[] list;
         List<ProcessModule> modules;
         public Form1()
@@ -76,16 +77,24 @@ namespace ALSRCalc
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            Calc();
+            CalcForward();
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            Calc();
+            CalcForward();
         }
 
-        private void Calc()
+        private void textBox3_TextChanged(object sender, EventArgs e)
         {
+            CalcBackward();
+        }
+
+        private void CalcForward()
+        {
+            if (_exit)
+                return;
+            _exit = true;
             try
             {
                 ulong rebaseaddress = Convert.ToUInt64(textBox1.Text.Trim().Replace(" ", "").Replace("0x", ""), 16);
@@ -99,6 +108,28 @@ namespace ALSRCalc
                 }
             }
             catch { textBox3.Text = "ERROR"; }
+            _exit = false;
+        }
+
+        private void CalcBackward()
+        {
+            if (_exit)
+                return;
+            _exit = true;
+            try
+            {
+                ulong rebaseaddress = Convert.ToUInt64(textBox1.Text.Trim().Replace(" ", "").Replace("0x", ""), 16);
+                ulong address = Convert.ToUInt64(textBox3.Text.Trim().Replace(" ", "").Replace("0x", ""), 16);
+                ulong baseaddress = (ulong)modules[comboBox2.SelectedIndex].BaseAddress.ToInt64();
+                if (rebaseaddress < address)
+                {
+                    address -= rebaseaddress;
+                    address += baseaddress;
+                    textBox2.Text = address.ToString("X8");
+                }
+            }
+            catch { textBox2.Text = "ERROR"; }
+            _exit = false;
         }
     }
 }
