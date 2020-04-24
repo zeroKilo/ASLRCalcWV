@@ -23,63 +23,36 @@ namespace ALSRCalc
 
         private void button1_Click(object sender, EventArgs e)
         {
-            try
-            {
-                list = Process.GetProcesses();
-                while (true)
+            int n = comboBox1.SelectedIndex;
+            int m = comboBox2.SelectedIndex;
+            if (n == -1 || m == -1)
+                return;
+            string pName = list[n].ProcessName;
+            string mName = modules[m].ModuleName;
+            RefreshProcess();
+            for(int i = 0; i<list.Length;i++)
+                if (list[i].ProcessName == pName)
                 {
-                    bool found = false;
-                    for (int i = 0; i < list.Length - 1; i++)
-                        if (list[i].ProcessName.CompareTo(list[i + 1].ProcessName) > 0)
+                    comboBox1.SelectedIndex = i;
+                    RefreshModule();
+                    for(int j = 0; j < modules.Count;j++)
+                        if (modules[j].ModuleName == mName)
                         {
-                            Process p = list[i];
-                            list[i] = list[i + 1];
-                            list[i + 1] = p;
-                            found = true;
+                            comboBox2.SelectedIndex = j;
+                            break;
                         }
-                    if (!found)
-                        break;
+                    break;
                 }
-                comboBox1.Items.Clear();
-                foreach (Process p in list)
-                    comboBox1.Items.Add(p.Id.ToString("D5") + " - " + p.ProcessName);
-                comboBox1.SelectedIndex = 0;
-            }
-            catch { textBox3.Text = "ERROR"; }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            RefreshProcess();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
-            {
-                int n = comboBox1.SelectedIndex;
-                if (n == -1 || list == null || list.Length <= n)
-                    return;
-                Process p = list[n];
-                comboBox2.Items.Clear();
-                modules = new List<ProcessModule>();
-                foreach (ProcessModule m in p.Modules)
-                    modules.Add(m);
-                while (true)
-                {
-                    bool found = false;
-                    for (int i = 0; i < modules.Count - 1; i++)
-                        if (modules[i].BaseAddress.ToInt64() > modules[i + 1].BaseAddress.ToInt64())
-                        {
-                            ProcessModule m = modules[i];
-                            modules[i] = modules[i + 1];
-                            modules[i + 1] = m;
-                            found = true;
-                        }
-                    if (!found)
-                        break;
-                }
-                foreach (ProcessModule m in modules)
-                    comboBox2.Items.Add(m.BaseAddress.ToString("X8") + " - " + m.ModuleName);
-                if (comboBox2.Items.Count > 0)
-                    comboBox2.SelectedIndex = 0;
-            }
-            catch { textBox3.Text = "ERROR"; }
+            RefreshModule();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -137,6 +110,67 @@ namespace ALSRCalc
             }
             catch { textBox2.Text = "ERROR"; }
             _exit = false;
+        }
+
+        private void RefreshProcess()
+        {
+            try
+            {
+                list = Process.GetProcesses();
+                while (true)
+                {
+                    bool found = false;
+                    for (int i = 0; i < list.Length - 1; i++)
+                        if (list[i].ProcessName.CompareTo(list[i + 1].ProcessName) > 0)
+                        {
+                            Process p = list[i];
+                            list[i] = list[i + 1];
+                            list[i + 1] = p;
+                            found = true;
+                        }
+                    if (!found)
+                        break;
+                }
+                comboBox1.Items.Clear();
+                foreach (Process p in list)
+                    comboBox1.Items.Add(p.Id.ToString("D5") + " - " + p.ProcessName);
+                comboBox1.SelectedIndex = 0;
+            }
+            catch { textBox3.Text = "ERROR"; }        
+        }
+
+        private void RefreshModule()
+        {
+            try
+            {
+                int n = comboBox1.SelectedIndex;
+                if (n == -1 || list == null || list.Length <= n)
+                    return;
+                Process p = list[n];
+                comboBox2.Items.Clear();
+                modules = new List<ProcessModule>();
+                foreach (ProcessModule m in p.Modules)
+                    modules.Add(m);
+                while (true)
+                {
+                    bool found = false;
+                    for (int i = 0; i < modules.Count - 1; i++)
+                        if (modules[i].BaseAddress.ToInt64() > modules[i + 1].BaseAddress.ToInt64())
+                        {
+                            ProcessModule m = modules[i];
+                            modules[i] = modules[i + 1];
+                            modules[i + 1] = m;
+                            found = true;
+                        }
+                    if (!found)
+                        break;
+                }
+                foreach (ProcessModule m in modules)
+                    comboBox2.Items.Add(m.BaseAddress.ToString("X8") + " - " + m.ModuleName);
+                if (comboBox2.Items.Count > 0)
+                    comboBox2.SelectedIndex = 0;
+            }
+            catch { textBox3.Text = "ERROR"; }
         }
     }
 }
